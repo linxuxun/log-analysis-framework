@@ -1,23 +1,10 @@
-[2026-03-21 22:30:39 634725][9][38889][0xfa42a00000003b60][W][HD][hdProcUDiskAlarm:258] Hd proc alarm id:184 diskId:1 sn:10030054925A29001V type:HD_ALARM_DISK_SINGLE_LINK isRestore:0 success.
-[2026-03-21 22:30:39 634944][9][38889][0xfa42a00000003b60][IMP][HD][hdProcUDiskAlarm:260] Hd proc alarm id:228 diskId:45 sn:10030054925A29003W type:HD_ALARM_DISK_SINGLE_LINK isRestore:0 success.
-[2026-03-21 22:30:39 635001][9][38889][0xfa42a00000003b60][W][HD][hdProcUDiskAlarm:258] Hd proc alarm id:229 diskId:12 sn:10030054925A29007R type:HD_ALARM_DISK_SINGLE_LINK isRestore:0 success.
-[2026-03-21 23:05:10 123456][9][38889][0xfa42a00000003b60][INFO][APP][appMain:120] System startup completed, version=3.2.1
-[2026-03-21 23:10:00 234567][9][38889][0xfa42a00000003b60][INFO][HD][hdDiskMonitor:88] Disk health check passed, all disks online
-[2026-03-21 23:15:01 345678][9][38889][0xfa42a00000003b60][IMP][HD][hdProcUDiskAlarm:260] Hd proc alarm id:230 diskId:1 sn:10030054925A29001V type:HD_ALARM_DISK_SINGLE_LINK isRestore:1 success.
-[2026-03-21 23:20:00 456789][9][38889][0xfa42a00000003b60][W][NET][netLinkCheck:45] Network interface eth0 link speed degraded to 1Gbps
-[2026-03-21 23:25:00 567890][9][38889][0xfa42a00000003b60][INFO][APP][appBackup:99] Backup task started: /data -> /backup
-[2026-03-21 23:30:00 678901][9][38889][0xfa42a00000003b60][ERROR][APP][appDB:300] Database connection pool exhausted, retry in 5s
-[2026-03-21 23:31:00 789012][9][38889][0xfa42a00000003b60][ERROR][APP][appDB:301] Database connection failed after 3 retries
-[2026-03-21 23:32:00 890123][9][38889][0xfa42a00000003b60][W][APP][appDB:200] Database connection recovered
-[2026-03-21 23:35:00 901234][9][38889][0xfa42a00000003b60][W][HD][hdTempMonitor:77] Disk temperature elevated: diskId:1 temp:72C threshold:70C
-
 [2026-03-22 08:00:01 100001][10][40100][0xfb01b00000003c10][E][NET][hdNetMasterCtrl:301] hdNetMasterCtrlFaultAlarmHandle[change(0 -> 1)] alarm trigger, slotId=3
 [2026-03-22 08:05:12 100002][10][40100][0xfb01b00000003c10][E][NET][hdNetMasterCtrl:302] hdNetMasterCtrlFaultAlarmHandle[change(0 -> 1)] alarm trigger, slotId=7
 [2026-03-22 09:30:00 100003][10][40100][0xfb01b00000003c10][W][NET][hdNetMasterCtrl:310] hdNetMasterCtrlFaultAlarmHandle[change(1 -> 0)] alarm restore, slotId=3
-[2026-03-22 10:00:00 100004][10][40100][0xfb01b00000003c10][W][NET][hdNetMasterCtrl:311] hdNetMasterCtrlFaultAlarmHandle[change(1 -> 0)] alarm restore, slotId=7
+[2026-03-22 09:35:00 100004][10][40100][0xfb01b00000003c10][W][NET][hdNetMasterCtrl:311] hdNetMasterCtrlFaultAlarmHandle[change(1 -> 0)] alarm restore, slotId=7
 
-[2026-03-22 08:10:05 200001][11][40200][0xfc02c00000003c20][E][NET][hdNetProc:410] hdNetProcCardFaultAlarm[restore 0] cardId=5 fault detected, need manual intervention
-[2026-03-22 08:11:30 200002][11][40200][0xfc02c00000003c20][E][NET][hdNetProc:411] hdNetProcCardFaultAlarm[restore 0] cardId=9 fault detected, need manual intervention
+[2026-03-22 08:10:05 200001][11][40200][0xfc02c00000003c20][E][NET][hdNetProc:410] hdNetProcCardFaultAlarm[restore 0] cardId=5 fault detected
+[2026-03-22 08:11:30 200002][11][40200][0xfc02c00000003c20][E][NET][hdNetProc:411] hdNetProcCardFaultAlarm[restore 0] cardId=9 fault detected
 [2026-03-22 08:20:00 200003][11][40200][0xfc02c00000003c20][I][NET][hdNetProc:415] hdNetProcCardFaultAlarm[restore 1] cardId=5 fault restore success
 [2026-03-22 08:21:00 200004][11][40200][0xfc02c00000003c20][I][NET][hdNetProc:416] hdNetProcCardFaultAlarm[restore 1] cardId=9 fault restore success
 
@@ -25,6 +12,16 @@
 [2026-03-22 08:16:30 300002][12][40300][0xfd03d00000003c30][E][NET][hdNetProcCtrl:511] hdNetProcCtrlFaultAlarm[fault alarm succ.] ctrlId=4 fault alarm report success
 [2026-03-22 08:30:00 300003][12][40300][0xfd03d00000003c30][I][NET][hdNetProcCtrl:520] hdNetProcCtrlFaultAlarm[system normal] ctrlId=2 running
 
-[2026-03-22 08:25:00 400001][13][40400][0xfe04e00000003c40][E][NET][hdNetProc:610] hdNetProcSlowLinkAlarm[restore Alarm] linkId=11 slow link restore, bandwidth recovered
-[2026-03-22 08:26:15 400002][13][40400][0xfe04e00000003c40][E][NET][hdNetProc:611] hdNetProcSlowLinkAlarm[restore Alarm] linkId=15 slow link restore, bandwidth recovered
-[2026-03-22 08:27:00 400003][13][40400][0xfe04e00000003c40][E][NET][hdNetProc:612] hdNetProcSlowLinkAlarm linkId=20 slow link alarm triggered, latency=3500ms
+[2026-03-22 08:25:00 400001][13][40400][0xfe04e00000003c40][E][NET][hdNetProc:610] hdNetProcSlowLinkAlarm[subhealth Alarm] linkId=11 slow link subhealth detected, latency=2800ms
+[2026-03-22 08:26:15 400002][13][40400][0xfe04e00000003c40][E][NET][hdNetProc:611] hdNetProcSlowLinkAlarm linkId=15 slow link subhealth, latency=3100ms
+[2026-03-22 08:27:00 400003][13][40400][0xfe04e00000003c40][I][NET][hdNetProc:612] hdNetProcSlowLinkAlarm linkId=11 slow link restored, latency=120ms
+
+[2026-03-22 10:00:00 500001][14][40500][0xff05f00000003c50][E][HD][hdProcRDisk:701] Hd proc alarm id:101 diskId:2 sn:SN20030054925A29B01V type:hdProcRDiskAlarm isRestore:0 success.
+[2026-03-22 10:01:00 500002][14][40500][0xff05f00000003c50][E][HD][hdProcRDisk:702] Hd proc alarm id:102 diskId:7 sn:SN20030054925A29B02V type:hdProcRDiskAlarm isRestore:0 success.
+[2026-03-22 10:05:00 500003][14][40500][0xff05f00000003c50][I][HD][hdProcRDisk:705] Hd proc alarm id:103 diskId:2 sn:SN20030054925A29B01V type:hdProcRDiskAlarm isRestore:1 success.
+
+[2026-03-22 10:10:00 600001][15][40600][0xf006000000003c60][E][HD][hdProcUDisk:801] Hd proc alarm id:201 diskId:3 sn:SN30030054925A29C01V type:hdProcUDiskAlarm isRestore:0 success.
+[2026-03-22 10:15:00 600002][15][40600][0xf006000000003c60][I][HD][hdProcUDisk:805] Hd proc alarm id:202 diskId:3 sn:SN30030054925A29C01V type:hdProcUDiskAlarm isRestore:1 success.
+
+[2026-03-22 10:20:00 700001][16][40700][0xf107000000003c70][E][HD][hdProcEnc:901] Hd proc alarm id:301 encId:1 type:hdProcEncAlarm isRestore:0 success.
+[2026-03-22 10:25:00 700002][16][40700][0xf107000000003c70][I][HD][hdProcEnc:905] Hd proc alarm id:302 encId:1 type:hdProcEncAlarm isRestore:1 success.
