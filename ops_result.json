@@ -1,0 +1,49 @@
+{
+  "status": "error",
+  "human_intervention": true,
+  "summary": "发现 4 条磁盘单链路告警未恢复，涉及 3 块磁盘（diskId: , 2, 5），需要人工介入处理",
+  "suggestion": "1. 检查告警磁盘物理连接是否松动\n2. 联系运维确认是否需更换硬盘\n3. 如已处理完毕，告警将在系统恢复后自动消除",
+  "details": {
+    "files_scanned": 1,
+    "total_lines": 12,
+    "active_alarms": 4,
+    "restored_alarms": 0,
+    "alarm_list": [
+      {
+        "raw": "[2026-03-21 22:30:39 634725][9][38889][0xfa42a00000003b60][W][HD][hdProcUDiskAlarm:258] Hd proc alarm id:184 diskId:1 sn",
+        "alarm_type": "HD_ALARM_DISK_SINGLE_LINK",
+        "is_restore": 0,
+        "disk_id": "",
+        "sn": "10030054925A29001V",
+        "file": "ops.log"
+      },
+      {
+        "raw": "[2026-03-21 22:30:39 634944][9][38889][0xfa42a00000003b60][IMP][HD][hdProcUDiskAlarm:260] Hd proc alarm id:228 diskId:45",
+        "alarm_type": "HD_ALARM_DISK_SINGLE_LINK",
+        "is_restore": 0,
+        "disk_id": "5",
+        "sn": "10030054925A29003W",
+        "file": "ops.log"
+      },
+      {
+        "raw": "[2026-03-21 22:30:39 635001][9][38889][0xfa42a00000003b60][W][HD][hdProcUDiskAlarm:258] Hd proc alarm id:229 diskId:12 s",
+        "alarm_type": "HD_ALARM_DISK_SINGLE_LINK",
+        "is_restore": 0,
+        "disk_id": "2",
+        "sn": "10030054925A29007R",
+        "file": "ops.log"
+      },
+      {
+        "raw": "[2026-03-21 23:15:01 345678][9][38889][0xfa42a00000003b60][IMP][HD][hdProcUDiskAlarm:260] Hd proc alarm id:230 diskId:1",
+        "alarm_type": "HD_ALARM_DISK_SINGLE_LINK",
+        "is_restore": 0,
+        "disk_id": "",
+        "sn": "10030054925A29001V",
+        "file": "ops.log"
+      }
+    ],
+    "log_files": [
+      "ops.log"
+    ]
+  }
+}
