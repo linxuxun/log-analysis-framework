@@ -1,27 +1,39 @@
-[2026-03-22 08:00:01 100001][10][40100][0xfb01b00000003c10][E][NET][hdNetMasterCtrl:301] hdNetMasterCtrlFaultAlarmHandle[change(0 -> 1)] alarm trigger, slotId=3
-[2026-03-22 08:05:12 100002][10][40100][0xfb01b00000003c10][E][NET][hdNetMasterCtrl:302] hdNetMasterCtrlFaultAlarmHandle[change(0 -> 1)] alarm trigger, slotId=7
-[2026-03-22 09:30:00 100003][10][40100][0xfb01b00000003c10][W][NET][hdNetMasterCtrl:310] hdNetMasterCtrlFaultAlarmHandle[change(1 -> 0)] alarm restore, slotId=3
-[2026-03-22 09:35:00 100004][10][40100][0xfb01b00000003c10][W][NET][hdNetMasterCtrl:311] hdNetMasterCtrlFaultAlarmHandle[change(1 -> 0)] alarm restore, slotId=7
-
-[2026-03-22 08:10:05 200001][11][40200][0xfc02c00000003c20][E][NET][hdNetProc:410] hdNetProcCardFaultAlarm[restore 0] cardId=5 fault detected
-[2026-03-22 08:11:30 200002][11][40200][0xfc02c00000003c20][E][NET][hdNetProc:411] hdNetProcCardFaultAlarm[restore 0] cardId=9 fault detected
-[2026-03-22 08:20:00 200003][11][40200][0xfc02c00000003c20][I][NET][hdNetProc:415] hdNetProcCardFaultAlarm[restore 1] cardId=5 fault restore success
-[2026-03-22 08:21:00 200004][11][40200][0xfc02c00000003c20][I][NET][hdNetProc:416] hdNetProcCardFaultAlarm[restore 1] cardId=9 fault restore success
-
-[2026-03-22 08:15:00 300001][12][40300][0xfd03d00000003c30][E][NET][hdNetProcCtrl:510] hdNetProcCtrlFaultAlarm[fault alarm succ.] ctrlId=2 fault alarm report success
-[2026-03-22 08:16:30 300002][12][40300][0xfd03d00000003c30][E][NET][hdNetProcCtrl:511] hdNetProcCtrlFaultAlarm[fault alarm succ.] ctrlId=4 fault alarm report success
-[2026-03-22 08:30:00 300003][12][40300][0xfd03d00000003c30][I][NET][hdNetProcCtrl:520] hdNetProcCtrlFaultAlarm[system normal] ctrlId=2 running
-
-[2026-03-22 08:25:00 400001][13][40400][0xfe04e00000003c40][E][NET][hdNetProc:610] hdNetProcSlowLinkAlarm[subhealth Alarm] linkId=11 slow link subhealth detected, latency=2800ms
-[2026-03-22 08:26:15 400002][13][40400][0xfe04e00000003c40][E][NET][hdNetProc:611] hdNetProcSlowLinkAlarm linkId=15 slow link subhealth, latency=3100ms
-[2026-03-22 08:27:00 400003][13][40400][0xfe04e00000003c40][I][NET][hdNetProc:612] hdNetProcSlowLinkAlarm linkId=11 slow link restored, latency=120ms
-
-[2026-03-22 10:00:00 500001][14][40500][0xff05f00000003c50][E][HD][hdProcRDisk:701] Hd proc alarm id:101 diskId:2 sn:SN20030054925A29B01V type:hdProcRDiskAlarm isRestore:0 success.
-[2026-03-22 10:01:00 500002][14][40500][0xff05f00000003c50][E][HD][hdProcRDisk:702] Hd proc alarm id:102 diskId:7 sn:SN20030054925A29B02V type:hdProcRDiskAlarm isRestore:0 success.
-[2026-03-22 10:05:00 500003][14][40500][0xff05f00000003c50][I][HD][hdProcRDisk:705] Hd proc alarm id:103 diskId:2 sn:SN20030054925A29B01V type:hdProcRDiskAlarm isRestore:1 success.
-
-[2026-03-22 10:10:00 600001][15][40600][0xf006000000003c60][E][HD][hdProcUDisk:801] Hd proc alarm id:201 diskId:3 sn:SN30030054925A29C01V type:hdProcUDiskAlarm isRestore:0 success.
-[2026-03-22 10:15:00 600002][15][40600][0xf006000000003c60][I][HD][hdProcUDisk:805] Hd proc alarm id:202 diskId:3 sn:SN30030054925A29C01V type:hdProcUDiskAlarm isRestore:1 success.
-
-[2026-03-22 10:20:00 700001][16][40700][0xf107000000003c70][E][HD][hdProcEnc:901] Hd proc alarm id:301 encId:1 type:hdProcEncAlarm isRestore:0 success.
-[2026-03-22 10:25:00 700002][16][40700][0xf107000000003c70][I][HD][hdProcEnc:905] Hd proc alarm id:302 encId:1 type:hdProcEncAlarm isRestore:1 success.
+[2026-03-21 22:30:39 634725][9][38889][0xfa42a00000003b60][W][HD][hdProcUDiskAlarm:258]Hd proc alarm id:184 diskId:1 sn:10030054925A29001V
+type:HD_ALARM_DISK_SINGLE_LINK isRestore:0 success.
+[2026-03-21 22:30:39 634944][9][38889][0xfa42a00000003b60][IMP][HD][hdProcUDiskAlarm:260]Hd proc alarm id:228 diskId:45 sn:10030054925A29003W type:HD_ALARM_DISK_SINGLE_LINK isRestore:0 success.
+[10][106662][0x298ab0000000254d][W][HD][hdNetProcSlowLinkAlarm:397]Net report ctrl id 1 nettype 10 link subhealth Alarm.
+[10][106662][0x298ab0000000254d][IMP][HD][hdSendNetAlarm:490]Hd send id:0 ctrl id 1 ctrl type STARCTRL net type ADM_NET_NR alarm type HD_ALARM_NET_LINK_SLOW alarm cause 0 success.
+[14][106674][0x0][W][OPS][opsProcSample:849][OPS_PROC_INST][ha:1, round:70]Proc inst new round start.
+[10][106662][0x0][LIB]before Here limited:3
+[10][106662][0x298ab0000000254d][W][HD][hdAlarmEventCacheCollect:1346]ms take alarm id:0 type:14 time:0.
+[9][106661][0x298ab00000002552][IMP][HD][hdProcNetAlarm:455]Hd proc id:57 id 1 STARCTRL net type
+ADM_NET_NR
+alarm type HD_ALARM_NET_LINK_SLOW restore 0 cause O success.
+[9][106661][0x0][LIB]before Here limited:3
+[9][106661][0x298ab00000002552][W][HD][hdAlarmEventCacheDel:1411]ms give alarm id:0 type:14 time:0.
+[9][106661][0x0][LIB]before Here limited:15
+[9][106661][0x470 1.0][W][HD][hdUdAlarmQueryProc:997]ms take alarm id:57 type:14 time:1761188933718.
+[9][106661][0x0][LIB]before Here limited:15
+[9][106661][0x47c 1.0][W][HD][hdAlarmEventProcOverProc:1129]ms give alarm id:57 type:14 time:1761188933718.
+[2026-01-19 22:20:08 771458][9][207447][0x94ffc0000000ee57][W][HD][hdNetMasterCtrlFaultAlarmHandle:1957]hd net ctrl:204 state change(0 -> 1) count=12.
+[2026-01-19 22:20:08 771473][9][207447][0x94ffc0000000ee57][IMP][HD][hdSendNetAlarm:485]Hd send id:0 ctrl id 204 ctrl type DISKCTRL net type ADM_NET_B_SMART_IP alarm type HD_ALARM_NET_FAULT alarm cause 0 success.
+[2026-01-19 22:20:08 771478][9][207447][0x94ffc0000000ee57][W][HD][hdNetMasterReportCtrlFaultAlarm:491]Net send ctrl id (204) net type (ADM_NET_B_SMART_IP) alarm type (HD_ALARM_NET_FAULT) isRestore (O) succ.
+[2025-10-15 18:28:58 109637][9][57573][0x396ad0000032ab05][W][HD][hdNetProcCardFaultAlarm:117]Net ctrl id 2, iface (enp181s0f0) fault (1) times.
+[2025-10-15 18:29:58 117275][9][57573][0x396ad0000032acd4][W][HD][hdNetProcCardFaultAlarm:117]Net ctrl id 2, iface (enp181s0f0) fault (13) times.
+[2025-10-15 18:30:58 122560][10][57572][0x396ad0000032aea3][W][HD][hdNetProcCardFaultAlarm:117]Net ctrl id 2, iface (enp181s0f0) fault (25) times.
+[2025-10-15 18:31:58 131345][9][57573][0x396ad0000032b072][W][HD][hdNetProcCardFaultAlarm:117]Net ctrl id 2, iface (enp181s0f0) fault (37) times.
+[2025-10-15 18:32:53 140276][10][57572][0x396ad0000032b219][W][HD][hdNetProcCardFaultAlarm:129]Net ctrl id 2 report iface(enp181s0f0) fault alarm restore 0.
+[2025-09-13 11:46:09 854800][14][64435][0x0][W][OPS][opsQosJudgeCluster:3749][Q0S_OPS]pool:1, iops:356400=>356400, bw:3397386240=>3397386240, rfactor:1024=>1024, wfactor:1788=>1741, iopsRSupp:512=>512, bwRSupp:8192=>8192
+[2025-09-13 11:46:10 827866][10][64430][0xeb7d40000050fb4a][E][HD][hdSdDetectCollect:320]SD get perf stat info failed, ret:-65542.
+[2025-09-13 11:46:11 828597][10][64430][0xeb7d40000050fb5e][E][HD][hdSdDetectCollect:320]SD get perf stat info failed, ret:-65542.
+[2025-09-13 11:46:12 291657][10][64430][0xeb7d40000050fb63][W][HD][hdRdFaultAlarmCheck:184]name:/dev/nvme31n1 sn:S665NG0X103629 writeErrorCnt:31 readErrorCnt:0 sendHD_ALARM_DISK_FAULT alarm.
+[2025-09-13 11:46:12 291668][10][64430][0xeb7d40000050fb63][W][HD][hdLocalBWatchRDInfoRecWrite:121]RDInfo bwatch rec write succ.
+[2025-09-13 11:46:12 291672][10][64430][0xeb7d40000050fb63][W][HD][hdLocalBWatchRDInfoFlagSet:206]Root disk(S665NG0X103629) rdFaultFlag change from 0 to 1.
+[2025-09-13 11:46:12 291678][10][64430][0xeb7d40000050fb63][W][HD][hdSendRDiskAlarm:351]Hd send alarm id:0 sn:S665NG0X103629 type:HD_ALARM_DISK_FAULT isRestore:0 success.
+[2025-09-13 11:46:12 291684][10][64430][0xeb7d40000050fb63][IMP][HD][hdSendRDiskAlarm:354]Hd send alarm id:0 sn:S665NG0X103629 type:HD_ALARM_DISK_FAULT isRestore:0 success.
+[2025-09-13 11:46:12 291689][10][64430][0xeb7d40000050fb63][W][HD][hdBWatchWriteAlarm:116]Get rootdisk(S665NG0X103629) diskld 19002 4098.
+[2025-09-13 11:46:12 291692][10][64430][0xeb7d40000050fb63][W][HD][hdBWatchWriteAlarm:51]Diskld:4098 alarm:HD_ALARM_DISK_FAULT isRestore:0.
+[2025-09-13 11:46:12 291695][10][64430][0xeb7d40000050fb63][W][HD][hdBWatchReadRec:170]Hd begin read bwatch hdDD.
+[2025-09-13 11:46:12 295110][10][64430][0xeb7d40000050fb65][W][HD][hdProcRDiskAlarm:320]Hd proc alarm id:1136 sn:S665NG0X103629 type:HD_ALARM_DISK_FAULT isRestore:0
+success.
+[2025-09-13 11:46:12 313447][10][64430][0xeb7d40000050fb65][IMP][HD][hdProcRDiskAlarm:323]Hd proc alarm id:1136 sn:S665NG0X103629 type:HD_ALARM_DISK_FAULT isRestore:0success.
