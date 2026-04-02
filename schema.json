@@ -1,0 +1,32 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "模块日志分析输出Schema",
+  "type": "object",
+  "required": ["status", "human_intervention", "summary"],
+  "properties": {
+    "status": {
+      "type": "string",
+      "enum": ["health", "warn", "error", "unknown"],
+      "description": "模块健康状态（health=正常 warn=警告 error=错误 unknown=未知）"
+    },
+    "human_intervention": {
+      "type": "boolean",
+      "description": "是否需要人工介入"
+    },
+    "summary": {
+      "type": "string",
+      "maxLength": 500,
+      "description": "简要总结（必填）"
+    },
+    "suggestion": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "修复建议（warn/error时必填）"
+    },
+    "details": {
+      "type": "object",
+      "description": "详细检查数据（结构各模块自定义）"
+    }
+  },
+  "additionalProperties": false
+}
