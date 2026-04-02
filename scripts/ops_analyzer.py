@@ -2,15 +2,19 @@
 """
 OPS模块 - 系统运维日志分析
 
-支持解析HD_ALARM_DISK_SINGLE_LINK格式日志:
-  [时间][级别][HD][组件:行号] Hd proc alarm id:N diskId:N sn:XXX type:HD_ALARM_DISK_SINGLE_LINK isRestore:0/1 success.
+支持解析5种告警类型:
+  1. HD_ALARM_DISK_SINGLE_LINK    — isRestore:0/1
+  2. hdNetMasterCtrlFaultAlarmHandle — change(N -> M)
+  3. hdNetProcCardFaultAlarm      — restore 0 / restore 1
+  4. hdNetProcCtrlFaultAlarm      — fault alarm succ.
+  5. hdNetProcSlowLinkAlarm       — restore Alarm
 
-状态判断:
-  - error:  any HD_ALARM_* 且 isRestore:0
-  - warn:   any HD_ALARM_* 且 isRestore:1
-  - health: 无HD_ALARM_*记录
+状态判断（每种告警）:
+  - error: 告警触发条件满足（未恢复）
+  - warn:  告警已恢复
+  - health: 无任何告警记录
 """
-import sys, os, json, argparse, logging
+import sys, os, json, argparse, logging, re
 from pathlib import Path
 
 logging.basicConfig(
@@ -19,75 +23,110 @@ logging.basicConfig(
     stream=sys.stderr)
 logger = logging.getLogger("ops_analyzer")
 
+# ── 告警类型注册表 ──────────────────────────────────────────
+ALARM_TYPES = [
+    "HD_ALARM_DISK_SINGLE_LINK",
+    "hdNetMasterCtrlFaultAlarmHandle",
+    "hdNetProcCardFaultAlarm",
+    "hdNetProcCtrlFaultAlarm",
+    "hdNetProcSlowLinkAlarm",
+]
+
+
+# ── 解析器：按类型 dispatch ────────────────────────────────
 
 def parse_alarm(line):
     """
-    解析一条 HD_ALARM_* 日志行。
-    字段顺序（从左到右）：
-      Hd proc alarm id:N diskId:N sn:XXX type:TYPE isRestore:N success.
-    先找到 isRestore: 的位置作为锚点，再向前依次找 type/diskId/sn。
+    识别行中的告警类型，提取类型名 + 恢复标志 + 扩展字段。
+    返回 dict 或 None。
     """
-    if "HD_ALARM" not in line:
+    hit = None
+    for atype in ALARM_TYPES:
+        if atype in line:
+            hit = atype
+            break
+    if hit is None:
         return None
 
-    result = {"raw": line[:120].strip()}
+    result = {"alarm_type": hit, "raw": line[:120].strip()}
 
-    # ── 1. isRestore（锚点）──────────────────────────────
-    p_restore = line.find("isRestore:")
-    if p_restore < 0:
-        return None
-    # isRestore 后的数字字符
-    val_char = line[p_restore + 10:p_restore + 11]
-    result["is_restore"] = int(val_char) if val_char.isdigit() else 0
+    # ── 1. HD_ALARM_DISK_SINGLE_LINK ────────────────────
+    if hit == "HD_ALARM_DISK_SINGLE_LINK":
+        p = line.find("isRestore:")
+        if p < 0:
+            return None
+        val = line[p + 10:p + 11]
+        result["is_restore"] = int(val) if val.isdigit() else 0
+        # diskId
+        pd = line.find("diskId:")
+        if 0 <= pd < p:
+            ed = line.find(" ", pd + 8)
+            result["disk_id"] = line[pd + 8:ed if ed > 0 else p].strip()
+        else:
+            result["disk_id"] = ""
+        # sn
+        ps = line.find("sn:")
+        if 0 <= ps < pd:
+            es = line.find(" ", ps + 3)
+            result["sn"] = line[ps + 3:es if es > 0 else pd].strip()
+        else:
+            result["sn"] = ""
 
-    # ── 2. alarm_type（isRestore 之前最近的值）────────────
-    #     "... type:HD_ALARM_DISK_SINGLE_LINK isRestore:0"
-    #     找 isRestore: 前一个空格 → type值的右边界
-    #     再找该空格前一个空格 → type值的左边界
-    space_before_restore = line.rfind(" ", 0, p_restore)        # "LINK"后的空格
-    if space_before_restore < 0:
-        return None
-    space_before_type = line.rfind(" ", 0, space_before_restore)  # "type:"前的空格
-    if space_before_type < 0:
-        return None
-    # type值 = type: 后面那个空格之后，到 space_before_restore 之前
-    type_value_start = space_before_type + len("type:")
-    result["alarm_type"] = line[type_value_start:space_before_restore].strip()
-    if result["alarm_type"] == "":
-        result["alarm_type"] = "UNKNOWN"
+    # ── 2. hdNetMasterCtrlFaultAlarmHandle ───────────────
+    elif hit == "hdNetMasterCtrlFaultAlarmHandle":
+        m = re.search(r"change\s*\(\s*(\d+)\s*->\s*(\d+)\s*\)", line)
+        if m:
+            old, new = int(m.group(1)), int(m.group(2))
+            result["from_val"] = old
+            result["to_val"]   = new
+            # 1 表示故障触发（0->1）；0 表示恢复（1->0）
+            result["is_restore"] = 0 if new == 1 else 1
+        else:
+            result["is_restore"] = 0
+        result["desc"] = _bracket_val(line, "change") or ""
 
-    # ── 3. diskId（在 type: 之前找最近的）────────────────
-    p_disk = line.find("diskId:")
-    if 0 <= p_disk < space_before_type:          # 确保在本行type之前
-        end_disk = line.find(" ", p_disk + 8)
-        if end_disk < 0 or end_disk > space_before_type:
-            end_disk = space_before_type
-        result["disk_id"] = line[p_disk + 8:end_disk].strip()
-    else:
-        result["disk_id"] = ""
+    # ── 3. hdNetProcCardFaultAlarm ────────────────────────
+    elif hit == "hdNetProcCardFaultAlarm":
+        # "restore 0" → 未恢复；"restore 1" → 已恢复
+        m = re.search(r"\brestore\s+(\d)\b", line)
+        if m:
+            result["is_restore"] = int(m.group(1))
+        else:
+            result["is_restore"] = 0
+        result["desc"] = _bracket_val(line, "hdNetProcCardFaultAlarm") or ""
 
-    # ── 4. sn（在 diskId 之前找）────────────────────────
-    p_sn = line.find("sn:")
-    if 0 <= p_sn < p_disk:                        # sn 在 diskId 之前
-        end_sn = line.find(" ", p_sn + 3)
-        if end_sn < 0 or end_sn > space_before_type:
-            end_sn = space_before_type
-        result["sn"] = line[p_sn + 3:end_sn].strip()
-    else:
-        result["sn"] = ""
+    # ── 4. hdNetProcCtrlFaultAlarm ────────────────────────
+    elif hit == "hdNetProcCtrlFaultAlarm":
+        # "fault alarm succ." → 告警成功触发（is_restore=0）
+        # 没有任何 restore 标记时默认是触发
+        result["is_restore"] = 0
+        result["desc"] = _bracket_val(line, "hdNetProcCtrlFaultAlarm") or ""
+
+    # ── 5. hdNetProcSlowLinkAlarm ────────────────────────
+    elif hit == "hdNetProcSlowLinkAlarm":
+        # "restore Alarm" → 已恢复（is_restore=1）；否则触发（is_restore=0）
+        result["is_restore"] = 1 if "restore Alarm" in line else 0
+        result["desc"] = _bracket_val(line, "hdNetProcSlowLinkAlarm") or ""
 
     return result
 
 
+def _bracket_val(line, keyword):
+    """提取 [keyword:xxx] 格式的值，返回 None 表示未找到。"""
+    m = re.search(r"\[" + re.escape(keyword) + r":([^\]]+)\]", line)
+    return m.group(1).strip() if m else None
+
+
+# ── 分析主函数 ───────────────────────────────────────────
+
 def analyze_ops(log_path):
-    """分析OPS目录，返回符合Schema的字典"""
     alarm_list = []
     total = err = warn = 0
 
     log_files = list(Path(log_path).rglob("*.log"))
-    logger.info("发现日志文件 %d 个", len(log_files))
+    logger.info("扫描 %d 个日志文件", len(log_files))
 
-    for lf in log_files[:20]:
+    for lf in log_files[:30]:
         try:
             with open(lf, "r", errors="ignore") as f:
                 for line in f:
@@ -110,34 +149,58 @@ def analyze_ops(log_path):
         except Exception as e:
             logger.warning("读取失败 %s: %s", lf, e)
 
-    active   = [a for a in alarm_list if a.get("is_restore") == 0]
-    restored = [a for a in alarm_list if a.get("is_restore") == 1]
+    # ── 按类型分组 ─────────────────────────────────────
+    by_type = {}
+    for a in alarm_list:
+        t = a["alarm_type"]
+        by_type.setdefault(t, {"active": [], "restored": []})
+        bucket = by_type[t]["active"] if a["is_restore"] == 0 else by_type[t]["restored"]
+        bucket.append(a)
 
-    if active:
-        disks = sorted({
-            a.get("disk_id", "?")
-            for a in active
-            if a.get("disk_id") and a.get("disk_id") != "?"
-        })
-        summary = (
-            "发现 %d 条磁盘单链路告警未恢复，"
-            "涉及 %d 块磁盘（diskId: %s），需要人工介入处理"
-        ) % (len(active), len(disks), ", ".join(disks) if disks else "未知")
-        suggestion = (
-            "1. 检查告警磁盘物理连接是否松动\n"
-            "2. 联系运维确认是否需更换硬盘\n"
-            "3. 如已处理完毕，告警将在系统恢复后自动消除"
-        )
+    # ── 生成摘要 ──────────────────────────────────────
+    active_all   = [a for a in alarm_list if a["is_restore"] == 0]
+    restored_all = [a for a in alarm_list if a["is_restore"] == 1]
+
+    summaries = []
+    suggestions = []
+    for atype, buckets in by_type.items():
+        active   = buckets["active"]
+        restored = buckets["restored"]
+        if active:
+            disk_ids = sorted({
+                a.get("disk_id", "?")
+                for a in active
+                if a.get("disk_id") and a["disk_id"] != "?"
+            })
+            extra = ""
+            if atype == "hdNetMasterCtrlFaultAlarmHandle":
+                changes = [f"{a.get('from_val')}→{a.get('to_val')}" for a in active]
+                extra = f"（状态变化: {', '.join(changes)}）"
+            elif atype == "hdNetProcCardFaultAlarm":
+                extra = f"（{len(active)}次未恢复）"
+            elif atype == "hdNetProcCtrlFaultAlarm":
+                extra = f"（{len(active)}次触发）"
+            elif atype == "hdNetProcSlowLinkAlarm":
+                extra = f"（{len(active)}次未恢复）"
+            disk_str = f"，涉及磁盘 {', '.join(disk_ids)}" if disk_ids else ""
+            summaries.append(
+                f"{atype}：{len(active)}条未恢复{extra}{disk_str}"
+            )
+            suggestions.append(_suggestion_for(atype, active))
+        elif restored:
+            summaries.append(f"{atype}：{len(restored)}条已恢复")
+            suggestions.append(f"建议定期巡检 {atype}，确认无新告警")
+
+    if summaries:
+        summary = "；".join(summaries)
+        suggestion = "\n".join(suggestions)
         status = "error"; hi = True
-    elif restored:
-        summary = "发现 %d 条告警记录，均已恢复，无需紧急处理" % len(restored)
-        suggestion = "建议定期巡检，确认无新的active告警"
-        status = "warn"; hi = True
     else:
-        summary = "OPS日志分析完成，未发现磁盘告警，系统运行正常"
+        summary = "OPS日志分析完成，未发现任何告警，系统运行正常"
         suggestion = ""; status = "health"; hi = False
 
-    logger.info("分析完成: total=%d active=%d restored=%d", total, len(active), len(restored))
+    logger.info("完成: total=%d active=%d restored=%d types=%s",
+                total, len(active_all), len(restored_all), list(by_type.keys()))
 
     return {
         "status": status,
@@ -147,13 +210,38 @@ def analyze_ops(log_path):
         "details": {
             "files_scanned": len(log_files),
             "total_lines": total,
-            "active_alarms": len(active),
-            "restored_alarms": len(restored),
-            "alarm_list": active[:20] if active else restored[:5],
+            "active_alarms":  len(active_all),
+            "restored_alarms": len(restored_all),
+            "by_type": {
+                t: {
+                    "active":    len(b["active"]),
+                    "restored":  len(b["restored"]),
+                }
+                for t, b in by_type.items()
+            },
+            "alarm_list": active_all[:30] if active_all else restored_all[:10],
             "log_files": [str(f.relative_to(log_path)) for f in log_files[:10]]
         }
     }
 
+
+def _suggestion_for(atype, active):
+    if atype == "HD_ALARM_DISK_SINGLE_LINK":
+        disks = sorted({a.get("disk_id","?") for a in active if a.get("disk_id")})
+        return (f"检查磁盘物理连接（diskId: {', '.join(disks)}），"
+                "确认硬盘是否松动或故障")
+    elif atype == "hdNetMasterCtrlFaultAlarmHandle":
+        return "检查主控模块状态变化原因，确认网络主控是否故障或重启"
+    elif atype == "hdNetProcCardFaultAlarm":
+        return "检查网卡/业务卡状态，确认是否需要更换或重启相关进程"
+    elif atype == "hdNetProcCtrlFaultAlarm":
+        return "查看Ctrl进程告警详情，确认故障原因并及时处理"
+    elif atype == "hdNetProcSlowLinkAlarm":
+        return "检查链路质量，确认是否存在慢链路或网络抖动"
+    return "及时处理告警"
+
+
+# ── CLI ──────────────────────────────────────────────────
 
 if __name__ == "__main__":
     p = argparse.ArgumentParser(description="OPS运维日志分析")
@@ -167,10 +255,9 @@ if __name__ == "__main__":
 
     if not os.path.isdir(args.log_path):
         print(json.dumps({
-            "status": "error",
-            "human_intervention": True,
+            "status": "error", "human_intervention": True,
             "summary": "日志目录不存在: %s" % args.log_path,
-            "suggestion": "请检查日志路径是否正确"
+            "suggestion": "请检查日志路径"
         }, ensure_ascii=False))
         sys.exit(1)
 
@@ -180,6 +267,6 @@ if __name__ == "__main__":
     if args.output:
         with open(args.output, "w", encoding="utf-8") as f:
             f.write(out)
-        logger.info("结果已写入: %s", args.output)
+        logger.info("已写入: %s", args.output)
     else:
         print(out)
