@@ -1,0 +1,77 @@
+{
+  "timestamp": "2026-04-02T13:38:02.089326",
+  "summary": {
+    "total": 3,
+    "success": 3,
+    "failed": 0,
+    "error": 0,
+    "timeout": 0,
+    "success_rate": "100.0%"
+  },
+  "modules": [
+    {
+      "module": "OPS",
+      "status": "success",
+      "data": {
+        "status": "ok",
+        "message": "OPS 日志分析完成",
+        "module": "OPS",
+        "data": {
+          "files_analyzed": 1,
+          "total_lines": 10,
+          "errors": 3,
+          "warnings": 2,
+          "error_list": [
+            "2026-04-02 08:15:00 ERROR  Database connection pool exhausted",
+            "2026-04-02 08:15:01 ERROR  Failed to process request: connection timeout",
+            "2026-04-02 08:40:22 ERROR  Exception in worker thread NullPointerException"
+          ],
+          "warning_list": [
+            "2026-04-02 08:12:45 WARNING Rate limit approaching 80 percent threshold",
+            "2026-04-02 08:25:00 WARNING Memory usage at 75 percent"
+          ],
+          "health_score": 81
+        }
+      },
+      "error": null
+    },
+    {
+      "module": "DISK",
+      "status": "success",
+      "data": {
+        "status": "ok",
+        "message": "磁盘日志分析完成",
+        "module": "DISK",
+        "data": {
+          "files_analyzed": 1,
+          "total_lines": 3,
+          "disk_usage_percent": 69,
+          "disk_full_events": 0,
+          "io_errors": 0,
+          "slow_operations": 0,
+          "health_score": 100
+        }
+      },
+      "error": null
+    },
+    {
+      "module": "NET",
+      "status": "success",
+      "data": {
+        "status": "ok",
+        "message": "NET log analysis done",
+        "module": "NET",
+        "data": {
+          "files_analyzed": 1,
+          "total_lines": 5,
+          "connection_failures": 2,
+          "connection_timeouts": 1,
+          "connection_resets": 1,
+          "avg_latency_ms": 14,
+          "health_score": 100
+        }
+      },
+      "error": null
+    }
+  ]
+}
