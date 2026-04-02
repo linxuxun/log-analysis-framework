@@ -1,0 +1,10 @@
+2026-04-02 08:00:01 INFO   Server started on port 8080
+2026-04-02 08:05:23 INFO   Request GET /api/users handled in 45ms
+2026-04-02 08:12:45 WARNING Rate limit approaching 80 percent threshold
+2026-04-02 08:15:00 ERROR  Database connection pool exhausted
+2026-04-02 08:15:01 ERROR  Failed to process request: connection timeout
+2026-04-02 08:20:33 INFO   Connection pool recovered retry successful
+2026-04-02 08:25:00 WARNING Memory usage at 75 percent
+2026-04-02 08:30:15 INFO   Scheduled backup task started
+2026-04-02 08:35:00 INFO   Backup completed successfully
+2026-04-02 08:40:22 ERROR  Exception in worker thread NullPointerException
