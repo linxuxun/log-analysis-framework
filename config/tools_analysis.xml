@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+  <modules>
+    <module name="OPS" script="python scripts/ops_analyzer.py" timeout="30">
+      <patterns>
+        <pattern>logs/ops/*.log</pattern>
+      </patterns>
+    </module>
+    <module name="DISK" script="python scripts/disk_analyzer.py" timeout="30">
+      <patterns>
+        <pattern>logs/disk/*.log</pattern>
+      </patterns>
+    </module>
+    <module name="NET" script="python scripts/net_analyzer.py" timeout="30">
+      <patterns>
+        <pattern>logs/net/*.log</pattern>
+      </patterns>
+    </module>
+  </modules>
+</config>
